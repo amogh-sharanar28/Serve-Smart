@@ -6,13 +6,16 @@ pipeline {
         EC2_HOST = "13.203.104.163"
         SSH_KEY_ID = "ec2-key"  // This must match the Jenkins credential ID
     }
-
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/amogh-sharanar28/Serve-Smart.git'
+               /* git 'https://github.com/amogh-sharanar28/Serve-Smart.git'*/
+                 echo 'Code already checked out by Jenkins.'
+
             }
-        }
+        } 
+
+    
 
         stage('Deploy on EC2') {
             steps {
