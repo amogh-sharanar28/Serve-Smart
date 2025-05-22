@@ -1,3 +1,4 @@
+line
 name: CI/CD Pipeline
 
 on:
@@ -9,17 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Build Docker images
-      run: docker-compose build
+      - name: Build Docker images
+        run: docker-compose build
 
-    - name: Start containers
-      run: docker-compose up -d
+      - name: Start containers
+        run: docker-compose up -d
 
-    - name: Run tests
-      run: echo "Add your tests here"
+      - name: Run tests
+        run: echo "Add your tests here"
 
-    - name: Tear down
-      run: docker-compose down
+      - name: Tear down
+        run: docker-compose down
