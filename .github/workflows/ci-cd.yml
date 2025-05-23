@@ -54,4 +54,4 @@ jobs:
 
             # Pull and run the latest image
             docker pull amoghsharanar/serve-smart:latest
-            docker run -d -p 80:3000 --name serve-smart amoghsharanar/serve-smart:latest
+            docker run -d -p 80:80 --name serve-smart amoghsharanar/serve-smart:latest
