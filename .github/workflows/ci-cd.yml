@@ -21,12 +21,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push Docker image to Docker Hub
+      - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          tags: amoghsharanar/serve-smart:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/serve-smart:latest
 
       - name: Deploy to EC2 via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -35,23 +35,20 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Ensure Docker group exists
-            if ! getent group docker > /dev/null; then
-              sudo groupadd docker
-            fi
+            # Stop and remove any existing containers
+            docker-compose -f ~/serve-smart/docker-compose.yml down -v || true
 
-            # Add current user to Docker group
-            sudo usermod -aG docker $USER
+            # Remove old app folder if exists
+            rm -rf ~/serve-smart
 
-            # Fix Docker socket permissions
-            sudo chown root:docker /var/run/docker.sock
-            sudo chmod 660 /var/run/docker.sock
+            # Clone latest repo
+            git clone https://github.com/amogh-sharanar28/Serve-Smart.git ~/serve-smart
 
-            # Stop and remove old container if it exists
-            docker stop serve-smart || true
-            docker rm serve-smart || true
-            docker rmi amoghsharanar/serve-smart:latest || true
+            # Navigate to project
+            cd ~/serve-smart
 
-            # Pull and run the latest image
-            docker pull amoghsharanar/serve-smart:latest
-            docker run -d -p 80:80 --name serve-smart amoghsharanar/serve-smart:latest
+            # Pull the latest image
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/serve-smart:latest
+
+            # Start the app using docker-compose
+            docker-compose up -d
