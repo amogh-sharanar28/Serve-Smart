@@ -31,30 +31,28 @@ jobs:
       - name: Deploy to EC2 via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            # Ensure Docker is installed
-            if ! command -v docker &> /dev/null; then
-              echo "Docker not found. Installing..."
-              sudo apt-get update
-              sudo apt-get install -y docker.io
-              sudo systemctl start docker
-              sudo systemctl enable docker
-            fi
+        host: ${{ secrets.SERVER_IP }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          # Ensure docker group exists
+          if ! getent group docker > /dev/null; then
+            sudo groupadd docker
+          fi
 
-            # Ensure docker group exists
-            if ! getent group docker > /dev/null; then
-              sudo groupadd docker
-            fi
+          # Add user to docker group
+          sudo usermod -aG docker $USER
 
-            # Add user to docker group
-            sudo usermod -aG docker $USER
+          # Grant docker.sock access
+          sudo chown root:docker /var/run/docker.sock
+          sudo chmod 660 /var/run/docker.sock
 
-            # Run docker commands using sudo (to avoid needing newgrp)
-            sudo docker stop serve-smart || true
-            sudo docker rm serve-smart || true
-            sudo docker rmi amoghsharanar/serve-smart:latest || true
-            sudo docker pull amoghsharanar/serve-smart:latest
-            sudo docker run -d -p 80:3000 --name serve-smart amoghsharanar/serve-smart:latest
+          # Restart docker (optional, depends on EC2 setup)
+          # sudo systemctl restart docker
+
+          # Run docker commands
+          docker stop serve-smart || true
+          docker rm serve-smart || true
+          docker rmi amoghsharanar/serve-smart:latest || true
+          docker pull amoghsharanar/serve-smart:latest
+          docker run -d -p 80:3000 --name serve-smart amoghsharanar/serve-smart:latest
