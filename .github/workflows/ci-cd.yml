@@ -35,20 +35,20 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Stop and remove any existing containers
+            # Stop and remove existing containers
             docker-compose -f ~/serve-smart/docker-compose.yml down -v || true
 
-            # Remove old app folder if exists
+            # Remove old application directory
             rm -rf ~/serve-smart
 
-            # Clone latest repo
+            # Clone the latest code
             git clone https://github.com/amogh-sharanar28/Serve-Smart.git ~/serve-smart
 
-            # Navigate to project
+            # Navigate to the project directory
             cd ~/serve-smart
 
-            # Pull the latest image
+            # Pull the latest Docker image
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/serve-smart:latest
 
-            # Start the app using docker-compose
+            # Start the application using Docker Compose
             docker-compose up -d
