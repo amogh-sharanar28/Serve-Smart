@@ -76,7 +76,7 @@
         		<div class="sticky">
         			<div class="card">
         				<div class="card-body">
-        					<p><large>Total Amount</large></p>
+        					<p><large>Total Amount of the cart</large></p>
         					<hr>
         					<p class="text-right"><b><?php echo number_format($total,2) ?></b></p>
         					<hr>
