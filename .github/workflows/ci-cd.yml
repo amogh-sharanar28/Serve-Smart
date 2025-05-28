@@ -35,20 +35,40 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Stop and remove existing containers
-            docker-compose -f ~/serve-smart/docker-compose.yml down -v || true
+            # Install Docker if not already installed
+            if ! command -v docker &> /dev/null; then
+              sudo apt-get update
+              sudo apt-get install -y docker.io
+              sudo systemctl enable docker
+              sudo systemctl start docker
+            fi
 
-            # Remove old application directory
-            rm -rf ~/serve-smart
+            # Add user to docker group (avoid permission denied)
+            sudo usermod -aG docker $USER
 
-            # Clone the latest code
-            git clone https://github.com/amogh-sharanar28/Serve-Smart.git ~/serve-smart
+            # Install Docker Compose v2 if not already installed
+            DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+            mkdir -p $DOCKER_CONFIG/cli-plugins
+            curl -SL https://github.com/docker/compose/releases/download/v2.23.3/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+            chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
 
-            # Navigate to the project directory
-            cd ~/serve-smart
+            # Refresh shell in docker group context
+            newgrp docker <<EONG
+              echo "Switched to docker group"
 
-            # Pull the latest Docker image
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/serve-smart:latest
+              # Stop and remove existing containers and volumes
+              docker compose -f ~/serve-smart/docker-compose.yml down -v || true
 
-            # Start the application using Docker Compose
-            docker-compose up -d
+              # Remove old application directory
+              rm -rf ~/serve-smart
+
+              # Clone the latest code
+              git clone https://github.com/amogh-sharanar28/Serve-Smart.git ~/serve-smart
+              cd ~/serve-smart
+
+              # Pull the latest Docker image
+              docker pull ${{ secrets.DOCKERHUB_USERNAME }}/serve-smart:latest
+
+              # Start the application using Docker Compose
+              docker compose up -d
+            EONG
