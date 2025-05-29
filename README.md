@@ -42,16 +42,52 @@ Serve-Smart is a web-based food ordering system designed to simplify the custome
 
 ```
 Serve-Smart/
-│
-├── docker-compose.yml            # Defines PHP + MySQL services
-├── Dockerfile                    # PHP-Apache web server setup
-├── fos_db.sql                    # MySQL database schema
-├── .github/workflows/deploy.yml # GitHub Actions workflow for CI/CD
-├── src/
-│   ├── admin/                    # Admin interface
-│   ├── customer/                 # Customer ordering interface
-│   └── includes/                # Common PHP includes
-└── README.md                    # Project documentation
+├── .github/
+│   └── workflows/
+│       └── deploy.yml
+├── admin/
+│   ├── add_cat.php
+│   ├── add_food.php
+│   ├── dashboard.php
+│   ├── delete_cat.php
+│   ├── delete_food.php
+│   ├── display_cat.php
+│   ├── display_food.php
+│   ├── footer.php
+│   ├── header.php
+│   ├── login.php
+│   ├── logout.php
+│   ├── orders.php
+│   └── style.css
+├── assets/
+│   └── (images and logos)
+├── css/
+│   └── style.css
+├── database/
+│   └── fos_db.sql
+├── js/
+│   └── script.js
+├── .gitignore
+├── about.php
+├── cart_list.php
+├── checkout.php
+├── contact.php
+├── docker-compose.yml
+├── Dockerfile
+├── footer.php
+├── head.php
+├── header.php
+├── home.php
+├── index.php
+├── login.php
+├── logout.php
+├── order_history.php
+├── payment.php
+├── placeorder.php
+├── readme.txt
+├── signup.php
+└── view_prod.php
+
 ```
 
 ---
@@ -124,22 +160,10 @@ KLE MSSCET, Belgaum
 
 ---
 
-## 📜 License
-
-This project is licensed under the MIT License.
-
----
-
-## 📷 Screenshots
-
-> _You can add screenshots of the homepage, admin panel, customer order page, etc. here._
-
----
-
 ## 📞 Contact
 
 Feel free to reach out for collaboration, improvements, or queries!
 
-📧 **Email**: amoghsharanar28@gmail.com  
+📧 **Email**: sharanaramogh@gmail.com  
 🐙 **GitHub**: [@amogh-sharanar28](https://github.com/amogh-sharanar28)  
-💼 **LinkedIn**: [linkedin.com/in/amogh-sharanar28](https://linkedin.com/in/amogh-sharanar28)
+💼 **LinkedIn**: [linkedin.com/in/amogh-sharanar](www.linkedin.com/in/amogh-sharanar-53a789282)
