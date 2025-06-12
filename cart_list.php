@@ -38,18 +38,21 @@ require_once 'admin/db_connect.php';
         </div>
 
         <?php
+        $user_id = $_SESSION['login_user_id'] ?? 0;
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $data = "WHERE c.user_id = '$user_id' OR c.client_ip = '$ip'";
         $total = 0;
-        if (isset($_SESSION['login_user_id'])) {
-          $filter = "WHERE c.user_id = '{$_SESSION['login_user_id']}'";
-        } else {
-          $ip = $_SERVER['REMOTE_ADDR'];
-          $filter = "WHERE c.client_ip = '$ip'";
-        }
-
-        $get = $conn->query("SELECT *, c.id as cid FROM cart c INNER JOIN product_list p ON p.id = c.product_id $filter");
+        
+        $get = $conn->query("SELECT *, c.id as cid FROM cart c 
+                             INNER JOIN product_list p ON p.id = c.product_id 
+                             $data");
+        
         while ($row = $get->fetch_assoc()):
-          $total += ($row['qty'] * $row['price']);
+            $total += ($row['qty'] * $row['price']);
+            // your display logic here...
+        endwhile;
         ?>
+
         <div class="card mt-2">
           <div class="card-body">
             <div class="row">
